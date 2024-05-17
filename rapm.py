@@ -23,11 +23,14 @@ subset = full_data[
         'HOME_PLAYER1', 'HOME_PLAYER2', 'HOME_PLAYER3', 'HOME_PLAYER4', 'HOME_PLAYER5'
      ]
 ]
+
+# have to preprocess stints that end in scores differently from stints that end in turnovers
+# because otherwise the PM can't be calculated
 scores = subset[~subset['SCOREMARGIN'].isna()].replace('TIE', 0).reset_index(drop=True)
 scores['PM'] = scores['SCOREMARGIN'].astype(np.int64).diff().replace(np.nan, 0)
 scores.at[0, 'PM'] = np.int64(scores.at[0, 'SCOREMARGIN']) # manually add in the first PM
 
-turnovers = subset[subset['TURNOVERS'] == 1]
+turnovers = subset[subset['TURNOVERS'] == 1].reset_index(drop=True)
 turnovers['SCOREMARGIN'].fillna(0, inplace=True)
 turnovers['PM'] = np.zeros(len(turnovers), dtype=np.int64)
 
