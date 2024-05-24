@@ -1,0 +1,15 @@
+1. note down the interpretation of the coefficients
+
+2. compute regular PM scores
+	- sum up a player's PM of every stint and take averge. make sure it's in the same units!
+
+3. need to regularize coefficients better
+	- elastic net for hyperparameter finetuning
+		- try out clmnet, cv.glmnet (cross-validation)
+	- good way to test coefficients (not as important):
+		- run the model and store coefficients
+		- choose a game
+		- for each stint, predict the score margin given the players and their coefficients
+		- sum up these score margins and compare to actual result
+
+4. make a new RAPM model: indicators are whether you're on offense or defense. use this to get ORAPM and DRAPM
