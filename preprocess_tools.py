@@ -3,8 +3,40 @@ Contains all functions used for preprocessing basketball games.
 '''
 import numpy as np
 import pandas as pd
+import nba_on_court as noc
 from typing import Tuple
 
+
+_BASE_FEATURES  = [
+    'SCOREMARGIN',
+    'TURNOVERS', 
+    'PLAYER1_ID', 
+    'AWAY_PLAYER1', 'AWAY_PLAYER2', 'AWAY_PLAYER3', 'AWAY_PLAYER4', 'AWAY_PLAYER5', 
+    'HOME_PLAYER1', 'HOME_PLAYER2', 'HOME_PLAYER3', 'HOME_PLAYER4', 'HOME_PLAYER5'
+]
+
+def preprocess_season(season: pd.DataFrame) -> pd.DataFrame:
+    '''
+    Given a full season of raw data, preprocess the data
+    and return the resulting DataFrame. Note that this
+    is essentially `preprocess_game` but for an entire season.
+
+    This will return a DataFrame with the following features:
+      `SCOREMARGIN`: The score margin of the stint. Note that positive means in favor for home, negative in favor for away.
+      `TURNOVERS`: Indicator of whether the stint resulted in a turnover.
+      `BALL_ID`: (Presumed to be) the player who possessed the ball during the stint.
+      `PM`: The Plus-Minus of the stint. See SCOREMARGIN for meaning of the sign.
+      `[AWAY|HOME]_PLAYER[NUM]`: Player ID of an Away/Home player.
+    '''
+    games = pd.unique(season['GAME_ID'])
+    list_of_game_data = []
+
+    for game in games:
+        current = season[season['GAME_ID'] == game].reset_index(drop=True)
+        current = noc.players_on_court(current)
+        list_of_game_data.append(preprocess_game(current))
+
+    return pd.concat(list_of_game_data, ignore_index=True)
 
 def preprocess_game(game_data: pd.DataFrame) -> pd.DataFrame:
     '''
@@ -14,30 +46,27 @@ def preprocess_game(game_data: pd.DataFrame) -> pd.DataFrame:
     This will return a DataFrame with the following features:
       `SCOREMARGIN`: The score margin of the stint. Note that positive means in favor for home, negative in favor for away.
       `TURNOVERS`: Indicator of whether the stint resulted in a turnover.
+      `BALL_ID`: (Presumed to be) the player who possessed the ball during the stint.
       `PM`: The Plus-Minus of the stint. See SCOREMARGIN for meaning of the sign.
       `[AWAY|HOME]_PLAYER[NUM]`: Player ID of an Away/Home player.
     '''
     # extract features we care about
-    subset = game_data[
-        [
-            'SCOREMARGIN',
-            'TURNOVERS', 
-            'AWAY_PLAYER1', 'AWAY_PLAYER2', 'AWAY_PLAYER3', 'AWAY_PLAYER4', 'AWAY_PLAYER5', 
-            'HOME_PLAYER1', 'HOME_PLAYER2', 'HOME_PLAYER3', 'HOME_PLAYER4', 'HOME_PLAYER5'
-        ]
-    ]
+    subset = game_data[_BASE_FEATURES]
+    subset.rename(columns={'PLAYER1_ID': 'BALL_ID'}, inplace=True)
 
     # have to preprocess stints that end in scores differently from stints that end in turnovers
     # because otherwise the PM can't be calculated
     scores = subset[~subset['SCOREMARGIN'].isna()].replace('TIE', 0).reset_index(drop=True)
     scores['PM'] = scores['SCOREMARGIN'].astype(np.int64).diff().replace(np.nan, 0)
     scores.at[0, 'PM'] = np.int64(scores.at[0, 'SCOREMARGIN']) # manually add in the first PM
+    score_stints = scores[(scores['TURNOVERS'] == 0) & ((scores['BALL_ID'].isna() == False) & (scores['BALL_ID'] != 0))]
 
     turnovers = subset[subset['TURNOVERS'] == 1].reset_index(drop=True)
     turnovers['SCOREMARGIN'].fillna(0, inplace=True)
     turnovers['PM'] = np.zeros(len(turnovers), dtype=np.int64)
+    turnover_stints = turnovers[((turnovers['BALL_ID'].isna() == False) & (turnovers['BALL_ID'] != 0))]
 
-    return pd.concat([scores, turnovers], ignore_index=True)
+    return pd.concat([score_stints, turnover_stints], ignore_index=True)
 
 _AWAY_LIST = ['AWAY_PLAYER1', 'AWAY_PLAYER2', 'AWAY_PLAYER3', 'AWAY_PLAYER4', 'AWAY_PLAYER5']
 _HOME_LIST = ['HOME_PLAYER1', 'HOME_PLAYER2', 'HOME_PLAYER3', 'HOME_PLAYER4', 'HOME_PLAYER5']
