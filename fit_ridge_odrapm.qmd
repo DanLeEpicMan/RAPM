@@ -1,0 +1,38 @@
+---
+title: "Fitting O/D-RAPM Model"
+format: pdf
+---
+
+```{r, load_packages}
+library('glmnet')
+library('tidyverse')
+```
+
+Load the design matrix
+```{r, load_data}
+design <- read_csv('design_matrices/odrapm_design.csv')
+design$...1 <- NULL
+design %>% as.matrix() -> design
+
+read_csv('data/processed_data_2022.csv')['PM'] %>% as.matrix() -> pm
+```
+
+Fit a GLM model. Set shrinkage for signed intercept to 0.
+```{r}
+cvfit <- cv.glmnet(
+    design, pm, 
+    alpha=0, 
+    intercept=FALSE, 
+    penalty.factor=c(0, rep(1, 434)),
+    nlambda=400,
+    lambda.min.ratio=0.001
+)
+
+```
+
+Extract coefficients
+```{r}
+coef(cvfit) %>% summary() -> coefs
+
+write.csv(coefs$x, 'data/coefficients.csv')
+```
