@@ -32,7 +32,8 @@ cvfit <- cv.glmnet(
 
 Extract coefficients
 ```{r}
-coef(cvfit) %>% summary() -> coefs
+coef(cvfit) %>%
+    as.matrix() -> coefs
 
-write.csv(coefs$x, 'data/coefficients.csv')
+write.csv(coefs, 'data/coefficients.csv')
 ```

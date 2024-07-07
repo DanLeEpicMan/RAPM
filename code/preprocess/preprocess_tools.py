@@ -8,6 +8,7 @@ from typing import Tuple
 
 
 _BASE_FEATURES  = [
+    'GAME_ID',
     'SCOREMARGIN',
     'TURNOVERS', 
     'PLAYER1_ID', 
@@ -22,6 +23,7 @@ def preprocess_season(season: pd.DataFrame) -> pd.DataFrame:
     is essentially `preprocess_game` but for an entire season.
 
     This will return a DataFrame with the following features:
+      `GAME_ID`: The game that the stint belongs to.
       `SCOREMARGIN`: The score margin of the stint. Note that positive means in favor for home, negative in favor for away.
       `TURNOVERS`: Indicator of whether the stint resulted in a turnover.
       `BALL_ID`: (Presumed to be) the player who possessed the ball during the stint.
@@ -44,6 +46,7 @@ def preprocess_game(game_data: pd.DataFrame) -> pd.DataFrame:
     preprocess the game data and return the result.
 
     This will return a DataFrame with the following features:
+      `GAME_ID`: The game that the stint belongs to.
       `SCOREMARGIN`: The score margin of the stint. Note that positive means in favor for home, negative in favor for away.
       `TURNOVERS`: Indicator of whether the stint resulted in a turnover.
       `BALL_ID`: (Presumed to be) the player who possessed the ball during the stint.
