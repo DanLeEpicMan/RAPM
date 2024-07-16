@@ -19,7 +19,7 @@ read_csv('data/processed_data_2022.csv')['PM'] %>% as.matrix() -> pm
 
 Fit a GLM model. Set shrinkage for signed intercept to 0.
 ```{r}
-cvfit <- cv.glmnet(
+cvfit <- glmnet(
     design, pm, 
     alpha=0, 
     intercept=FALSE, 
