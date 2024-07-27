@@ -47,5 +47,5 @@ Extract coefficients
 coef(cvfit) %>%
     as.matrix() -> coefs
 
-write.csv(coefs, 'results/coefficients.csv')
+write.csv(coefs, 'code/rapm_model/coefficients.csv')
 ```

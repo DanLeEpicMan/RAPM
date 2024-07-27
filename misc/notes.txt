@@ -1,3 +1,6 @@
-1. for every player in each game, find their PM. also find the PM when they were NOT on the court. compute this difference.
-2. add a signed intercept: coefficient 1 if home is offense, -1 otherwise
-	- make sure this coefficient doesn't shrink
+1. find correlation between ryurko results and average PM
+2. figure out box score statistics to summarize opponent strength
+	- ball PM (BPM)
+	- win shares per 48
+	- sum them all up
+	- https://www.basketball-reference.com/leagues/NBA_2024_advanced.html
