@@ -1,6 +1,2 @@
-1. find correlation between ryurko results and average PM
-2. figure out box score statistics to summarize opponent strength
-	- ball PM (BPM)
-	- win shares per 48
-	- sum them all up
-	- https://www.basketball-reference.com/leagues/NBA_2024_advanced.html
+1. compute DR estimators for IPW and overlapping weights
+2. validate random forests and RAPM model
