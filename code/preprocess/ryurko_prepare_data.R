@@ -7,7 +7,7 @@ library(hoopR)
 
 # Gather games from last season -------------------------------------------
 
-nba_game_log <- nba_leaguegamelog(season = 2022)
+nba_game_log <- nba_leaguegamelog(season = 2023)
 nba_game_log <- nba_game_log$LeagueGameLog
 
 # Get the regular season game IDs:
@@ -164,7 +164,7 @@ length(unique(season_stint_data$game_id))
 
 # Save this dataset:
 write_csv(season_stint_data,
-          "data/nba_2223_season_stints.csv")
+          "data/nba_2324_season_stints.csv")
 
 # Create the RAPM design matrix -------------------------------------------
 
@@ -222,12 +222,12 @@ game_stint_rapm_data <- game_stint_context |>
 # Save this dataset:
 write_csv(game_stint_rapm_data,
           # Compress this since it's fairly big
-          "design_matrices/nba_2223_season_rapm_data.csv.gz")
+          "design_matrices/nba_2324_season_rapm_data.csv.gz")
 
 
 # Get the player ids to join for viewing later ----------------------------
 
-nba_players <- nba_commonallplayers(season = 2022)
+nba_players <- nba_commonallplayers(season = 2023)
 nba_players <- nba_players$CommonAllPlayers
 
 # Grab the player ids from the RAPM data:
@@ -246,7 +246,7 @@ player_table <- nba_players |>
 
 # Great - they are all in here
 write_csv(player_table,
-          "data/nba_2223_player_table.csv")
+          "data/nba_2324_player_table.csv")
 
 
 

@@ -1,2 +1,8 @@
-1. compute DR estimators for IPW and overlapping weights
-2. validate random forests and RAPM model
+1. pull in 23-24 data and compute RMSE for all models
+2. include team strength
+    - if player is in stint, remove them
+    - if player isn't, remove "closest player"
+        - maha. distance based on box score stats
+    - replot collage histograms
+3. drop players with <48 minutes
+4. read into DR variance to understand low RAPM players
