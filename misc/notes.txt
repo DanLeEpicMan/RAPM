@@ -1,8 +1,7 @@
-1. pull in 23-24 data and compute RMSE for all models
-2. include team strength
-    - if player is in stint, remove them
-    - if player isn't, remove "closest player"
-        - maha. distance based on box score stats
-    - replot collage histograms
-3. drop players with <48 minutes
-4. read into DR variance to understand low RAPM players
+1. low possession stints are very noisy: we wanna upweight stints with more possessions
+    - change IPW weights from 1/p_i to sqrt(n) / p_i
+    - divide by weighted averages instead of N
+    - how do we interpret this? changing the weights? changing the margin?
+2. upweight all data by number of possessions
+3. add identity lines to all scatterplots
+4. compare RAPM (and other metrics) to 2023-2024 box score statistics
