@@ -1,7 +1,8 @@
-1. low possession stints are very noisy: we wanna upweight stints with more possessions
-    - change IPW weights from 1/p_i to sqrt(n) / p_i
-    - divide by weighted averages instead of N
-    - how do we interpret this? changing the weights? changing the margin?
-2. upweight all data by number of possessions
-3. add identity lines to all scatterplots
-4. compare RAPM (and other metrics) to 2023-2024 box score statistics
+1. IPW ATT, IPW-DR ATT against RAPM
+    - ATT = Treated population
+2. RAPM vs. Random Forest Effect (predicted given presence - predicted given absence) over treated stints
+    - weighted average by n_pos
+3. See IPW-DR results using different margin predictors
+    - Linear, random forest, 
+4. Add Random Forest to RMSE
+5. Report weighted average of RMSEs instead of raw best.
